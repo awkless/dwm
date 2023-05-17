@@ -1,7 +1,14 @@
+-*- Patched by Awkless -*-
+
 dwm - dynamic window manager
 ============================
 dwm is an extremely fast, small, and dynamic window manager for X.
 
+Patches
+-------
+
+- Bar padding patch <https://dwm.suckless.org/patches/barpadding/>.
+- Full gaps patch <https://dwm.suckless.org/patches/fullgaps/>.
 
 Requirements
 ------------
