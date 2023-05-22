@@ -10,6 +10,7 @@ Patches
 - Bar padding patch <https://dwm.suckless.org/patches/barpadding/>.
 - Full gaps patch <https://dwm.suckless.org/patches/fullgaps/>.
 - Restart signal patch <https://dwm.suckless.org/patches/restartsig/>.
+- Add passmenu2 keybindings.
 
 Requirements
 ------------
@@ -71,7 +72,8 @@ MMB is middle mouse click.
 | MEDIA DIMMER           | Decrease screen brightness.
 | MODKEY + F9            | Increase screen brightness.
 | MEDIA BRIGHTER         | Increase screen brightness.
-| MODKEY + p             | Open dmenu.
+| MODKEY + p             | Open passmen2.
+| MODKEY + r             | Open dmenu.
 | MODKEY + SHIFT + ENTER | Open a terminal.
 | MODKEY + b             | Toggle status bar.
 | MODKEY + j             | Next window in current tag.

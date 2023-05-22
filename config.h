@@ -69,6 +69,7 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 	                          "-nb", col_gray1, "-nf", col_gray3, "-sb",
 				  col_cyan, "-sf", col_gray4, NULL };
+static const char *passmenu[] = { "passmenu2", NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 /* Commands to manipulate volume... */
@@ -101,8 +102,11 @@ static const Key keys[] = {
 	{ MODKEY, XK_F8, spawn, {.v = dimmer}},
 	{ MODKEY, XK_F9, spawn, {.v = brighter}},
 
+	/* Open password manager... */
+	{ MODKEY, XK_p, spawn, {.v = passmenu} },
+
 	/* Open dmenu... */
-	{ MODKEY, XK_p, spawn, {.v = dmenucmd } },
+	{ MODKEY, XK_r, spawn, {.v = dmenucmd} },
 
 	/* Open a terminal... */
 	{ MODKEY|ShiftMask, XK_Return, spawn, {.v = termcmd } },
