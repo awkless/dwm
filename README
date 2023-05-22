@@ -49,6 +49,67 @@ like this in your .xinitrc:
     exec dwm
 
 
+Keybindings
+-----------
+
+MODKEY in this patched version is the Super/Windows key not the Alt key.
+MEDIA is a multi media key.
+LMB is left mouse click.
+RMB is right mouse click.
+MMB is middle mouse click.
+
+| Key Combo              | Function
+| ====================== |
+| MODKEY + F1            | Mute volume.
+| MEDIA MUTE VOLUME      | Mute volume.
+| MODKEY + F2            | Decrease volume.
+| MEDIA DOWN VOLUME      | Decrease volume.
+| MODKEY + F3            | Increase volume.
+| MEDIA UP VOLUME        | Increase volume.
+| MODKEY + F8            | Decrease screen brightness.
+| MEDIA DIMMER           | Decrease screen brightness.
+| MODKEY + F9            | Increase screen brightness.
+| MEDIA BRIGHTER         | Increase screen brightness.
+| MODKEY + p             | Open dmenu.
+| MODKEY + SHIFT + ENTER | Open a terminal.
+| MODKEY + b             | Toggle status bar.
+| MODKEY + j             | Next window in current tag.
+| MODKEY + k             | Previous window in current tag.
+| MODKEY + i             | Increase number of windows on master.
+| MODKEY + d             | Decrease number of windows on master.
+| MODKEY + h             | Increase master size.
+| MODKEY + l             | Decrease master size.
+| MODKEY + ENTER         | Push active window from stack to master, or pulls \
+|                        | last used window from stack onto master.
+| MODKEY + TAB           | Switch to previous tag.
+| MODKEY + SHIFT + c     | Kill focused window.
+| MODKEY + t             | Switch to tile mode.
+| MODKEY + f             | Switch to floating mode.
+| MODKEY + m             | Switch to monicle mode.
+| MODKEY + SPACE         | Toggle previous layout mode.
+| MODKEY + SHIFT + SPACE | Make focused window float.
+| MODKEY + 0             | View all windows on screen.
+| MODKEY + ,             | Move focus to previous screen (multi monitor setup).
+| MODKEY + .             | Move focus to next screen (multi monitory setup).
+| MODKEY + -             | Decrease window gaps.
+| MODKEY + =             | Increase window gaps.
+| MODKEY + SHIFT + =     | Set all gaps to 0.
+| MODKEY + [1-9]         | Change to tag based on number.
+| MODKEY + SHIFT q       | Exit DWM.
+| LMB on layout symbol   | Toggle previous layout.
+| RMB on layout symbol   | Switch to monicle mode.
+| MMB on window title    | Push active window from stack to master, or pulls \
+|                        | last used window from stack onto master.
+| MMB on status text     | Open a terminal.
+| MODKEY + LMB on window | Move a window by mouse.
+| MODKEY + MMB on window | Toggles focused window into floating mode.
+| MODKEY + RMB on window | Resize a window.
+| LMB on tag in bar      | Switch view to clicked tag.
+| RMB on tag in bar      | Toggles view of windows in that tag.
+| MODKEY + LMB on tag    | Move focused window into click tag.
+| MODKEY + RMB on tag    | Make focused window appear in that tag as well as
+|                        | current tag it resides in.
+
 Configuration
 -------------
 The configuration of dwm is done by creating a custom config.h

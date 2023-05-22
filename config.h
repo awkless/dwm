@@ -1,5 +1,8 @@
 /* See LICENSE file for copyright and license details. */
 
+/* Multimedia keys... */
+#include <X11/XF86keysym.h>
+
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int gappx     = 5;        /* gaps between windows */
@@ -48,75 +51,174 @@ static const Layout layouts[] = {
 };
 
 /* key definitions */
-#define MODKEY Mod1Mask
+#define MODKEY Mod4Mask    /* Super/Windows key */
+#define CONTROL ControlMask /* Control key */
+#define SHIFT ShiftMask   /* Shift key*/
 #define TAGKEYS(KEY,TAG) \
-	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
-	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
-	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
-	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
+	{ MODKEY,               KEY,      view,           {.ui = 1 << TAG} }, \
+	{ MODKEY|CONTROL,       KEY,      toggleview,     {.ui = 1 << TAG} }, \
+	{ MODKEY|SHIFT,         KEY,      tag,            {.ui = 1 << TAG} }, \
+	{ MODKEY|CONTROL|SHIFT, KEY,      toggletag,      {.ui = 1 << TAG} },
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
+	                          "-nb", col_gray1, "-nf", col_gray3, "-sb",
+				  col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
+/* Commands to manipulate volume... */
+static const char *up_vol[]   =
+	{"pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%", NULL};
+static const char *down_vol[] =
+	{"pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%", NULL};
+static const char *mute_vol[] =
+	{"pactl", "set-sink-volume", "@DEFAULT_SINK@", "toggle", NULL};
+
+/* Commands to manipulate screen brightness... */
+static const char *brighter[] = {"brightnessctl", "set", "5%+", NULL};
+static const char *dimmer[]   = {"brightnessctl", "set", "5%-", NULL};
+
+/* Keys follow this pattern:
+ * modifier, key, function, argument
+ */
 static const Key keys[] = {
-	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
-	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
-	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
-	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
-	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
-	{ MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },
-	TAGKEYS(                        XK_1,                      0)
-	TAGKEYS(                        XK_2,                      1)
-	TAGKEYS(                        XK_3,                      2)
-	TAGKEYS(                        XK_4,                      3)
-	TAGKEYS(                        XK_5,                      4)
-	TAGKEYS(                        XK_6,                      5)
-	TAGKEYS(                        XK_7,                      6)
-	TAGKEYS(                        XK_8,                      7)
-	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	/* Volume control keys... */
+	{0, XF86XK_AudioMute, spawn, {.v = mute_vol}},
+	{0, XF86XK_AudioLowerVolume, spawn, {.v = down_vol}},
+	{0, XF86XK_AudioRaiseVolume, spawn, {.v = up_vol}},
+	{ MODKEY, XK_F2, spawn, {.v = down_vol}},
+	{ MODKEY, XK_F3, spawn, {.v = up_vol}},
+	{ MODKEY, XK_F1, spawn, {.v = mute_vol}},
+
+	/* Screen brightness control keys... */
+	{0, XF86XK_MonBrightnessDown, spawn, {.v = dimmer}},
+	{0, XF86XK_MonBrightnessUp, spawn, {.v = brighter}},
+	{ MODKEY, XK_F8, spawn, {.v = dimmer}},
+	{ MODKEY, XK_F9, spawn, {.v = brighter}},
+
+	/* Open dmenu... */
+	{ MODKEY, XK_p, spawn, {.v = dmenucmd } },
+
+	/* Open a terminal... */
+	{ MODKEY|ShiftMask, XK_Return, spawn, {.v = termcmd } },
+
+	/* Show/hide status bar... */
+	{ MODKEY, XK_b, togglebar, {0} },
+
+	/* Focus on next/previous window in current tag... */
+	{ MODKEY, XK_j, focusstack, {.i = -1 } },
+	{ MODKEY, XK_k, focusstack, {.i = +1 } },
+
+	/* Increase/decrease number of windows on master... */
+	{ MODKEY, XK_i, incnmaster, {.i = +1 } },
+	{ MODKEY, XK_d, incnmaster, {.i = -1 } },
+
+	/* Increase/decrease master size... */
+	{ MODKEY, XK_h, setmfact, {.f = -0.05} },
+	{ MODKEY, XK_l, setmfact, {.f = +0.05} },
+
+	/* Push active window from stack to master, or pulls last used window
+	 * from stack onto master. */
+	{ MODKEY, XK_Return, zoom, {0} },
+
+	/* Switch to previous tag... */
+	{ MODKEY, XK_Tab, view, {0} },
+
+	/* Kill focused window... */
+	{ MODKEY|ShiftMask, XK_c, killclient,     {0} },
+
+	/* Enter tile mode... */
+	{ MODKEY, XK_t, setlayout, {.v = &layouts[0]} },
+
+	/* Enter floating mode...*/
+	{ MODKEY, XK_f, setlayout, {.v = &layouts[1]} },
+
+	/* Make individual window float... */
+	{ MODKEY|ShiftMask, XK_space, togglefloating, {0} },
+
+	/* Enter monical mode... */
+	{ MODKEY, XK_m, setlayout, {.v = &layouts[2]} },
+
+	/* Toggle previous layout mode... */
+	{ MODKEY, XK_space, setlayout, {0} },
+
+	/* View all windows on screen... */
+	{ MODKEY, XK_0, view, {.ui = ~0 } },
+
+	/* Make focused window appear on all tags... */
+	{ MODKEY|ShiftMask, XK_0, tag, {.ui = ~0 } },
+
+	/* Move focus between screens (multi monitor setup)... */
+	{ MODKEY, XK_comma, focusmon, {.i = -1 } },
+	{ MODKEY, XK_period, focusmon, {.i = +1 } },
+
+	/* Move active window to different screen... */
+	{ MODKEY|ShiftMask, XK_comma, tagmon, {.i = -1 } },
+	{ MODKEY|ShiftMask, XK_period, tagmon, {.i = +1 } },
+
+	/* Manipulate window gaps... */
+	{ MODKEY, XK_minus, setgaps, {.i = -1 } },
+	{ MODKEY, XK_equal, setgaps, {.i = +1 } },
+	{ MODKEY|ShiftMask, XK_equal, setgaps, {.i = 0  } },
+
+	/* Change tabs... */
+	TAGKEYS(XK_1, 0)
+	TAGKEYS(XK_2, 1)
+	TAGKEYS(XK_3, 2)
+	TAGKEYS(XK_4, 3)
+	TAGKEYS(XK_5, 4)
+	TAGKEYS(XK_6, 5)
+	TAGKEYS(XK_7, 6)
+	TAGKEYS(XK_8, 7)
+	TAGKEYS(XK_9, 8)
+
+	/* Exit DWM... */
+	{ MODKEY|ShiftMask, XK_q, quit, {0} },
 };
 
 /* button definitions */
-/* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
+/* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
+ * ClkClientWin, or ClkRootWin */
+/* Format of click, event mask, button, function, argument... */
 static const Button buttons[] = {
-	/* click                event mask      button          function        argument */
-	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
-	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
-	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
-	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
-	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
-	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
-	{ ClkTagBar,            0,              Button1,        view,           {0} },
-	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
-	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
-	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
+	/* Left clicking on layout symbol on bar toggles previous layout... */
+	{ ClkLtSymbol, 0, Button1, setlayout, {0} },
+
+	/* Right clicking on layout symbol switches to monical mode... */
+	{ ClkLtSymbol, 0, Button3, setlayout, {.v = &layouts[2]} },
+
+	/* Middle clicking on window title pushes active window from stack to
+	 * master, or pulls last used window from stack onto master. */
+	{ ClkWinTitle, 0, Button2, zoom, {0} },
+
+	/* Middle clicking on status text in bar opens a terminal... */
+	{ ClkStatusText, 0, Button2, spawn, {.v = termcmd } },
+
+	/* MODKEY + left click moves a window by mouse... */
+	{ ClkClientWin, MODKEY, Button1, movemouse, {0} },
+
+	/* MODKEY + middle click toggles focused window into floating mode... */
+	{ ClkClientWin, MODKEY, Button2, togglefloating, {0} },
+
+	/* MODKEY + right click resizes focused window by mouse... */
+	{ ClkClientWin, MODKEY, Button3, resizemouse, {0} },
+
+	/* Left click a tag in bar switches view to that tag... */
+	{ ClkTagBar, 0, Button1, view, {0} },
+
+	/* Right click a tag in bar toggles view of windows in that tag... */
+	{ ClkTagBar, 0, Button3, toggleview, {0} },
+
+	/* MODKEY + Left click on tag in bar moves focused window into that
+	 * tag... */
+	{ ClkTagBar, MODKEY, Button1, tag, {0} },
+
+	/* MODKEY + Right click on tag will make focused window appear in that
+	 * tag as well as current tag it resides in... */
+	{ ClkTagBar, MODKEY, Button3, toggletag, {0} },
 };
 
