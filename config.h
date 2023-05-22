@@ -178,6 +178,9 @@ static const Key keys[] = {
 
 	/* Exit DWM... */
 	{ MODKEY|ShiftMask, XK_q, quit, {0} },
+
+	/* Restart DWM... */
+	{ MODKEY|ControlMask|ShiftMask, XK_q, quit, {1} }, 
 };
 
 /* button definitions */
