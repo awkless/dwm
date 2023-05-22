@@ -9,6 +9,7 @@ Patches
 
 - Bar padding patch <https://dwm.suckless.org/patches/barpadding/>.
 - Full gaps patch <https://dwm.suckless.org/patches/fullgaps/>.
+- Restart signal patch <https://dwm.suckless.org/patches/restartsig/>.
 
 Requirements
 ------------
