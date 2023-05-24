@@ -4,24 +4,23 @@
 #include <X11/XF86keysym.h>
 
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 4;        /* border pixel of windows */
 static const unsigned int gappx     = 5;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const int vertpad            = 30;       /* vertical padding of bar */
-static const int sidepad            = 30;       /* horizontal padding of bar */
-static const char *fonts[]          = { "Hurmit Nerd Font:style=Regular:size=12" };
-static const char dmenufont[]       = "Hurmit Nerd Font:style=Regular:size=12";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
-static const char *colors[][3]      = {
+static const int vertpad            = 20;       /* vertical padding of bar */
+static const int sidepad            = 20;       /* horizontal padding of bar */
+static const char *fonts[] = { "Hurmit Nerd Font:style=Regular:size=12" };
+static const char fg_norm[]      = "#fce8c3";
+static const char fg_sel[]       = "#f75341";
+static const char bg_norm[]      = "#1c1b19";
+static const char border_norm[]  = "#918175";
+static const char border_sel[]   = "#3a3a3a";
+static const char *colors[][3]   = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeNorm] = { fg_norm, bg_norm, bg_norm },
+	[SchemeSel]  = { fg_sel, border_sel,  border_sel  },
 };
 
 /* tagging */
@@ -33,9 +32,23 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* Layout: class, instance, title, tags mask, isfloating, monitor */
+	/* NOTE: monitor of -1 will make application appear on currently focused
+	 * monitor, while 1 will make application appear in primary monitor. */
+
+	/* Rules for Gimp... */
+	{ "gimp", NULL, NULL, 1 << 6, 1, -1 },
+	{ "Gimp", NULL, NULL, 1 << 6, 1, -1 },
+
+	/* Rules for ST... */
+	{ "st-256color", NULL, "st", 1 << 2, 0, -1 },
+	{ "st-256color", NULL, "tmux", 1 << 2,  0, -1 },
+	{ "st-256color", NULL, "calcurse", 0, 0, -1 },
+	{ "st-256color", NULL, "mutt", 1 << 1, 0, -1 },
+
+	/* Rules for Firefox web browser... */
+	{ "firefox",  NULL,       NULL, 1 << 3, 0, -1 },
+	{ "Firefox",  NULL,       NULL, 1 << 3, 0, -1 },
 };
 
 /* layout(s) */
@@ -66,10 +79,8 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
-	                          "-nb", col_gray1, "-nf", col_gray3, "-sb",
-				  col_cyan, "-sf", col_gray4, NULL };
-static const char *passmenu[] = { "passmenu2", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, NULL };
+static const char *passmenu[] = { "passmenu2", "-m", dmenumon, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 /* Commands to manipulate volume... */
