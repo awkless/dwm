@@ -9,8 +9,8 @@ static const unsigned int gappx     = 5;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const int vertpad            = 20;       /* vertical padding of bar */
-static const int sidepad            = 20;       /* horizontal padding of bar */
+static const int vertpad            = 8;        /* vertical padding of bar */
+static const int sidepad            = 16;       /* horizontal padding of bar */
 static const char *fonts[] = { "Hurmit Nerd Font:style=Regular:size=12" };
 static const char fg_norm[]      = "#fce8c3";
 static const char fg_sel[]       = "#f75341";
@@ -25,7 +25,7 @@ static const char *colors[][3]   = {
 
 /* tagging */
 static const char *tags[] =
-	{ "", "󰻣", "", "", "", "󰊴", "", "", "" };
+	{ "", "󰻣", "", "", "", "󰊴", "", "", ""};
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -40,11 +40,15 @@ static const Rule rules[] = {
 	{ "gimp", NULL, NULL, 1 << 6, 1, -1 },
 	{ "Gimp", NULL, NULL, 1 << 6, 1, -1 },
 
+	/* Rules for Word and PDF editing/viewing applications... */
+	{ "libreoffice", NULL, NULL, 1 << 4, 1, -1 },
+	{ "okular", NULL, NULL, 1 << 4, 1, -1 },
+
 	/* Rules for ST... */
-	{ "st-256color", NULL, "st", 1 << 2, 0, -1 },
-	{ "st-256color", NULL, "tmux", 1 << 2,  0, -1 },
 	{ "st-256color", NULL, "calcurse", 0, 0, -1 },
 	{ "st-256color", NULL, "mutt", 1 << 1, 0, -1 },
+	{ "st-256color", NULL, "st", 1 << 2, 0, -1 },
+	{ "st-256color", NULL, "tmux", 1 << 2,  0, -1 },
 
 	/* Rules for Firefox web browser... */
 	{ "firefox",  NULL,       NULL, 1 << 3, 0, -1 },
@@ -89,7 +93,7 @@ static const char *up_vol[]   =
 static const char *down_vol[] =
 	{"pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%", NULL};
 static const char *mute_vol[] =
-	{"pactl", "set-sink-volume", "@DEFAULT_SINK@", "toggle", NULL};
+	{"pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL};
 
 /* Commands to manipulate screen brightness... */
 static const char *brighter[] = {"brightnessctl", "set", "5%+", NULL};
