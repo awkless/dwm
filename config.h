@@ -89,11 +89,11 @@ static const char *termcmd[]  = { "st", NULL };
 
 /* Commands to manipulate volume... */
 static const char *up_vol[]   =
-	{"amixer", "set", "Master", "5%+", NULL};
+	{"pactl", "set-sink-volume", "0", "+5%", NULL};
 static const char *down_vol[] =
-	{"amixer", "set", "Master", "5%-", NULL};
+	{"pactl", "set-sink-volume", "0", "-5%", NULL};
 static const char *mute_vol[] =
-	{"amixer", "set", "Master", "toggle", NULL};
+	{"pactl", "set-sink-mute", "0", "toggle", NULL};
 
 /* Commands to manipulate screen brightness... */
 static const char *brighter[] = {"brightnessctl", "set", "5%+", NULL};
