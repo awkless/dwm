@@ -25,7 +25,7 @@ static const char *colors[][3]   = {
 
 /* tagging */
 static const char *tags[] =
-	{ "", "󰻣", "", "", "", "󰊴", "", "", ""};
+	{ "", "󰻣", "", "", "", "󰊴", "", "", ""};
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -37,8 +37,9 @@ static const Rule rules[] = {
 	 * monitor, while 1 will make application appear in primary monitor. */
 
 	/* Rules for Gimp... */
-	{ "gimp", NULL, NULL, 1 << 6, 1, -1 },
-	{ "Gimp", NULL, NULL, 1 << 6, 1, -1 },
+	{ "gimp", NULL, NULL, 1 << 7, 1, -1 },
+	{ "Gimp", NULL, NULL, 1 << 7, 1, -1 },
+	{ "feh", NULL, NULL, 1 << 7, 1, -1 },
 
 	/* Rules for Word and PDF editing/viewing applications... */
 	{ "libreoffice", NULL, NULL, 1 << 4, 1, -1 },
@@ -49,6 +50,11 @@ static const Rule rules[] = {
 	{ "st-256color", NULL, "mutt", 1 << 1, 0, -1 },
 	{ "st-256color", NULL, "st", 1 << 2, 0, -1 },
 	{ "st-256color", NULL, "tmux", 1 << 2,  0, -1 },
+
+	/* Music audio...*/
+	{ "pavucontrol", NULL, NULL, 1 << 6, 0, -1 },
+	{ "Pavucontrol", NULL, NULL, 1 << 6, 0, -1 },
+	{ "st-256color", NULL, "cmus", 1 << 6, 0, -1 },
 
 	/* Rules for Firefox web browser... */
 	{ "firefox",  NULL,       NULL, 1 << 3, 0, -1 },
@@ -99,6 +105,10 @@ static const char *mute_vol[] =
 static const char *brighter[] = {"brightnessctl", "set", "5%+", NULL};
 static const char *dimmer[]   = {"brightnessctl", "set", "5%-", NULL};
 
+/* Use scrot for screen shots... */
+static const char *screen_shot[] =
+	{"scrot", "/home/awkless/pictures/screenshots/%Y-%m-%d-%T.jpg", NULL};
+
 /* Keys follow this pattern:
  * modifier, key, function, argument
  */
@@ -110,6 +120,8 @@ static const Key keys[] = {
 	{ MODKEY, XK_F2, spawn, {.v = down_vol}},
 	{ MODKEY, XK_F3, spawn, {.v = up_vol}},
 	{ MODKEY, XK_F1, spawn, {.v = mute_vol}},
+
+	{ 0, XK_Print, spawn, {.v = screen_shot}},
 
 	/* Screen brightness control keys... */
 	{0, XF86XK_MonBrightnessDown, spawn, {.v = dimmer}},
