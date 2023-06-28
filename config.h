@@ -112,6 +112,12 @@ static const char *screen_shot[] =
 /* Lock screen... */
 static const char *slock[] = {"slock", NULL};
 
+/* Reboot... */
+static const char *reboot[] = {"reboot", NULL};
+
+/* Shutdown... */
+static const char *shutdown[] = {"shutdown", "-h", "now", NULL};
+
 /* Keys follow this pattern:
  * modifier, key, function, argument
  */
@@ -128,7 +134,13 @@ static const Key keys[] = {
 	{ 0, XK_Print, spawn, {.v = screen_shot}},
 
 	/* Lock screen... */
-	{ MODKEY, XK_Escape, spawn, {.v = slock}},
+	{MODKEY, XK_Escape, spawn, {.v = slock}},
+
+	/* Reboot... */
+	{MODKEY|ShiftMask, XK_Escape, spawn, {.v = reboot}},
+
+	/* Shutdown... */
+	{MODKEY|ControlMask|ShiftMask, XK_Escape, spawn, {.v = shutdown}},
 
 	/* Screen brightness control keys... */
 	{0, XF86XK_MonBrightnessDown, spawn, {.v = dimmer}},
