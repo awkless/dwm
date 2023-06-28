@@ -109,6 +109,9 @@ static const char *dimmer[]   = {"brightnessctl", "set", "5%-", NULL};
 static const char *screen_shot[] =
 	{"scrot", "/home/awkless/pictures/screenshots/%Y-%m-%d-%T.jpg", NULL};
 
+/* Lock screen... */
+static const char *slock[] = {"slock", NULL};
+
 /* Keys follow this pattern:
  * modifier, key, function, argument
  */
@@ -121,7 +124,11 @@ static const Key keys[] = {
 	{ MODKEY, XK_F3, spawn, {.v = up_vol}},
 	{ MODKEY, XK_F1, spawn, {.v = mute_vol}},
 
+	/* Print screen... */
 	{ 0, XK_Print, spawn, {.v = screen_shot}},
+
+	/* Lock screen... */
+	{ MODKEY, XK_Escape, spawn, {.v = slock}},
 
 	/* Screen brightness control keys... */
 	{0, XF86XK_MonBrightnessDown, spawn, {.v = dimmer}},
