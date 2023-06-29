@@ -95,11 +95,11 @@ static const char *termcmd[]  = { "st", NULL };
 
 /* Commands to manipulate volume... */
 static const char *up_vol[]   =
-	{"pactl", "set-sink-volume", "0", "+5%", NULL};
+	{"pamixer", "-i", "5", NULL};
 static const char *down_vol[] =
-	{"pactl", "set-sink-volume", "0", "-5%", NULL};
+	{"pamixer", "-d", "5", NULL};
 static const char *mute_vol[] =
-	{"pactl", "set-sink-mute", "0", "toggle", NULL};
+	{"pamixer", "--toggle-mute", NULL};
 
 /* Commands to manipulate screen brightness... */
 static const char *brighter[] = {"brightnessctl", "set", "5%+", NULL};
