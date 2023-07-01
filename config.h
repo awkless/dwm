@@ -227,11 +227,11 @@ static const Key keys[] = {
 	TAGKEYS(XK_8, 7)
 	TAGKEYS(XK_9, 8)
 
+	/* Restart DWM... */
+	{ MODKEY, XK_q, quit, {1} }, 
+
 	/* Exit DWM... */
 	{ MODKEY|ShiftMask, XK_q, quit, {0} },
-
-	/* Restart DWM... */
-	{ MODKEY|ControlMask|ShiftMask, XK_q, quit, {1} }, 
 };
 
 /* button definitions */
