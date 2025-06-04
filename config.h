@@ -9,6 +9,11 @@ static const int vertpad            = 10;       /* vertical padding of bar */
 static const int sidepad            = 10;       /* horizontal padding of bar */
 static const int horizpadbar        = 8;        /* horizontal padding for statusbar */
 static const int vertpadbar         = 8;        /* vertical padding for statusbar */
+static const unsigned int gappih    = 10;       /* horiz inner gap between windows */
+static const unsigned int gappiv    = 10;       /* vert inner gap between windows */
+static const unsigned int gappoh    = 10;       /* horiz outer gap between windows and screen edge */
+static const unsigned int gappov    = 10;       /* vert outer gap between windows and screen edge */
+static const int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
 static const char *fonts[]          = { "monospace:size=10" };
 static const char dmenufont[]       = "monospace:size=10";
 static const char col_gray1[]       = "#222222";
@@ -49,9 +54,10 @@ static const Layout layouts[] = {
 };
 
 /* key definitions */
-#define MODKEY Mod4Mask
+#define MODKEY  Mod4Mask
+#define ALT     Mod1Mask
 #define CONTROL ControlMask
-#define SHIFT ShiftMask
+#define SHIFT   ShiftMask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,               KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|CONTROL,       KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -77,6 +83,22 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
+	{ MODKEY|ALT,              XK_h,      incrgaps,       {.i = +1 } },
+	{ MODKEY|ALT,              XK_l,      incrgaps,       {.i = -1 } },
+	{ MODKEY|ALT|SHIFT,    XK_h,      incrogaps,      {.i = +1 } },
+	{ MODKEY|ALT|SHIFT,    XK_l,      incrogaps,      {.i = -1 } },
+	{ MODKEY|ALT|CONTROL,  XK_h,      incrigaps,      {.i = +1 } },
+	{ MODKEY|ALT|CONTROL,  XK_l,      incrigaps,      {.i = -1 } },
+	{ MODKEY|ALT,              XK_0,      togglegaps,     {0} },
+	{ MODKEY|ALT|SHIFT,    XK_0,      defaultgaps,    {0} },
+	{ MODKEY,                       XK_y,      incrihgaps,     {.i = +1 } },
+	{ MODKEY,                       XK_o,      incrihgaps,     {.i = -1 } },
+	{ MODKEY|CONTROL,           XK_y,      incrivgaps,     {.i = +1 } },
+	{ MODKEY|CONTROL,           XK_o,      incrivgaps,     {.i = -1 } },
+	{ MODKEY|ALT,              XK_y,      incrohgaps,     {.i = +1 } },
+	{ MODKEY|ALT,              XK_o,      incrohgaps,     {.i = -1 } },
+	{ MODKEY|SHIFT,             XK_y,      incrovgaps,     {.i = +1 } },
+	{ MODKEY|SHIFT,             XK_o,      incrovgaps,     {.i = -1 } },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|SHIFT,             XK_c,      killclient,     {0} },
