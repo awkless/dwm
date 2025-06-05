@@ -14,32 +14,33 @@ static const unsigned int gappiv    = 10;       /* vert inner gap between window
 static const unsigned int gappoh    = 10;       /* horiz outer gap between windows and screen edge */
 static const unsigned int gappov    = 10;       /* vert outer gap between windows and screen edge */
 static const int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
-static const char *fonts[]          = { "monospace:size=10" };
-static const char dmenufont[]       = "monospace:size=10";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
+static const char *fonts[]          = { "IosevkaTerm Nerd Font:style=Regular:size=16" };
+static const char dmenufont[]       = "IosevkaTerm Nerd Font:style=Regular:size=16";
+
+static const char fg_norm[]      = "#D0D0D0";
+static const char fg_sel[]       = "#303030";
+static const char bg_norm[]      = "#000000";
+static const char border_norm[]  = "#9999AA";
+static const char border_sel[]   = "#FF0090";
 static const char *colors[][3]      = {
-	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	/*               fg       bg          border   */
+	[SchemeNorm] = { fg_norm, bg_norm,    border_norm },
+	[SchemeSel]  = { fg_sel,  border_norm, border_sel },
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[] = { "", "󰖟", "󰇮", "󱥉" };
 
 static const char *tagsel[][2] = {
-	{ "#ffffff", "#ff0000" },
-	{ "#ffffff", "#ff7f00" },
-	{ "#000000", "#ffff00" },
-	{ "#000000", "#00ff00" },
-	{ "#ffffff", "#0000ff" },
-	{ "#ffffff", "#4b0082" },
-	{ "#ffffff", "#9400d3" },
-	{ "#000000", "#ffffff" },
-	{ "#ffffff", "#000000" },
+	{ "#11FF00", "#303030" },
+	{ "#11FF00", "#303030" },
+	{ "#11FF00", "#303030" },
+	{ "#11FF00", "#303030" },
+	{ "#11FF00", "#303030" },
+	{ "#11FF00", "#303030" },
+	{ "#11FF00", "#303030" },
+	{ "#11FF00", "#303030" },
+	{ "#11FF00", "#303030" },
 };
 
 static const unsigned int ulinepad	= 5;	/* horizontal padding between the underline and tag */
@@ -65,9 +66,9 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[]=",      tile },    /* first entry is default */
-	{ "><>",      NULL },    /* no layout function means floating behavior */
-	{ "[M]",      monocle },
+	{ "[󰐕]",      tile },    /* first entry is default */
+	{ "[󰊓]",      NULL },    /* no layout function means floating behavior */
+	{ "[]",      monocle },
 };
 
 /* key definitions */
@@ -86,12 +87,15 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, NULL };
 static const char *termcmd[]  = { "st", NULL };
+static const char *passmenu[] =
+	{ "passmenu2", "-m", dmenumon, "-g", "1", "-l", "5", NULL};
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,         XK_p,      spawn,          {.v = passmenu } },
+	{ MODKEY,         XK_r,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|SHIFT,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
