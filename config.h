@@ -4,7 +4,7 @@
 #include <X11/XF86keysym.h>
 
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 4;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayonleft  = 0;   /* 0: systray in the right corner, >0: systray on left of status text */
@@ -31,14 +31,11 @@ static const char bg_norm[]      = "#0E0224";
 static const char border_norm[]  = "#5F5FFF";
 static const char border_sel[]   = "#D700FF";
 static const char *colors[][3]      = {
-	/*               fg       bg          border   */
-	[SchemeNorm] = { fg_norm, bg_norm,    border_norm },
+	[SchemeNorm] = { fg_norm, bg_norm,     border_norm },
 	[SchemeSel]  = { fg_sel,  border_norm, border_sel },
 };
 
-/* tagging */
 static const char *tags[] = { "󰋜", "", "󰖟", "󰇮", "", "󱎓", "", "", ""};
-
 static const char *tagsel[][2] = {
 	{ "#00D700", "#0E0224" },
 	{ "#FFAF00", "#0E0224" },
@@ -54,7 +51,7 @@ static const char *tagsel[][2] = {
 static const unsigned int ulinepad	= 5;	/* horizontal padding between the underline and tag */
 static const unsigned int ulinestroke	= 2;	/* thickness / height of the underline */
 static const unsigned int ulinevoffset	= 0;	/* how far above the bottom of the bar the line should appear */
-static const int ulineall 		= 0;	/* 1 to show underline on all tags, 0 for just the active ones */
+static const int ulineall = 0;	/* 1 to show underline on all tags, 0 for just the active ones */
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -62,8 +59,29 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* Rules for image processing... */
+	{ "gimp", NULL, NULL, 1 << 4, 1, 0 },
+	{ "Gimp", NULL, NULL, 1 << 4, 1, 0 },
+	{ "feh",  NULL, NULL, 1 << 4, 1, 0 },
+
+	/* Rules for Word and PDF editing/viewing applications... */
+	{ "libreoffice", NULL, NULL, 1 << 3, 0, 0 },
+	{ "okular",      NULL, NULL, 1 << 3, 0, 0 },
+
+	/* Rules for ST... */
+	{ "st-256color", NULL, "mutt", 1 << 3, 0, 0 },
+	{ "st-256color", NULL, "aerc", 1 << 3, 0, 0 },
+	{ "st-256color", NULL, "st",   1 << 1, 0, 0 },
+	{ "st-256color", NULL, "tmux", 1 << 1, 0, 0 },
+
+	/* Music audio...*/
+	{ "pavucontrol", NULL, NULL,   1 << 6, 0, 0 },
+	{ "Pavucontrol", NULL, NULL,   1 << 6, 0, 0 },
+	{ "st-256color", NULL, "cmus", 1 << 6, 0, 0 },
+
+	/* Rules for Firefox web browser... */
+	{ "firefox",  NULL, NULL, 1 << 2, 0, 0 },
+	{ "Firefox",  NULL, NULL, 1 << 2, 0, 0 },
 };
 
 /* layout(s) */
@@ -82,13 +100,13 @@ static const Layout layouts[] = {
 /* key definitions */
 #define MODKEY  Mod4Mask
 #define ALT     Mod1Mask
-#define CONTROL ControlMask
+#define CTRL ControlMask
 #define SHIFT   ShiftMask
 #define TAGKEYS(KEY,TAG) \
-	{ MODKEY,               KEY,      view,           {.ui = 1 << TAG} }, \
-	{ MODKEY|CONTROL,       KEY,      toggleview,     {.ui = 1 << TAG} }, \
-	{ MODKEY|SHIFT,         KEY,      tag,            {.ui = 1 << TAG} }, \
-	{ MODKEY|CONTROL|SHIFT, KEY,      toggletag,      {.ui = 1 << TAG} },
+	{ MODKEY,            KEY,      view,           {.ui = 1 << TAG} }, \
+	{ MODKEY|CTRL,       KEY,      toggleview,     {.ui = 1 << TAG} }, \
+	{ MODKEY|SHIFT,      KEY,      tag,            {.ui = 1 << TAG} }, \
+	{ MODKEY|CTRL|SHIFT, KEY,      toggletag,      {.ui = 1 << TAG} },
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
@@ -106,65 +124,65 @@ static const char *scrot[]    =
 	{"scrot", "/home/awkless/pictures/screenshots/%Y-%m-%d-%T.jpg", NULL};
 
 static const Key keys[] = {
-	/* modifier                     key        function        argument */
-	{0, XF86XK_AudioMute,        spawn,          {.v = mute_vol}},
-	{0, XF86XK_AudioLowerVolume, spawn,          {.v = down_vol}},
-	{0, XF86XK_AudioRaiseVolume, spawn,          {.v = up_vol}},
-	{ MODKEY,         XK_F2,     spawn,          {.v = down_vol}},
-	{ MODKEY,         XK_F3,     spawn,          {.v = up_vol}},
-	{ MODKEY,         XK_F1,     spawn,          {.v = mute_vol}},
-	{ MODKEY,         XK_p,      spawn,          {.v = passmenu } },
-	{ MODKEY,         XK_r,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|SHIFT,             XK_Return, spawn,          {.v = termcmd } },
-	{ 0,              XK_Print,  spawn,          {.v = scrot}},
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
-	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
-	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
-	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-	{ MODKEY|ALT,              XK_h,      incrgaps,       {.i = +1 } },
-	{ MODKEY|ALT,              XK_l,      incrgaps,       {.i = -1 } },
-	{ MODKEY|ALT|SHIFT,    XK_h,      incrogaps,      {.i = +1 } },
-	{ MODKEY|ALT|SHIFT,    XK_l,      incrogaps,      {.i = -1 } },
-	{ MODKEY|ALT|CONTROL,  XK_h,      incrigaps,      {.i = +1 } },
-	{ MODKEY|ALT|CONTROL,  XK_l,      incrigaps,      {.i = -1 } },
-	{ MODKEY|ALT,              XK_0,      togglegaps,     {0} },
-	{ MODKEY|ALT|SHIFT,    XK_0,      defaultgaps,    {0} },
-	{ MODKEY,                       XK_y,      incrihgaps,     {.i = +1 } },
-	{ MODKEY,                       XK_o,      incrihgaps,     {.i = -1 } },
-	{ MODKEY|CONTROL,           XK_y,      incrivgaps,     {.i = +1 } },
-	{ MODKEY|CONTROL,           XK_o,      incrivgaps,     {.i = -1 } },
-	{ MODKEY|ALT,              XK_y,      incrohgaps,     {.i = +1 } },
-	{ MODKEY|ALT,              XK_o,      incrohgaps,     {.i = -1 } },
-	{ MODKEY|SHIFT,             XK_y,      incrovgaps,     {.i = +1 } },
-	{ MODKEY|SHIFT,             XK_o,      incrovgaps,     {.i = -1 } },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|SHIFT,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
-	{ MODKEY|SHIFT,             XK_space,  togglefloating, {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|SHIFT,             XK_0,      tag,            {.ui = ~0 } },
-	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
-	{ MODKEY|SHIFT,             XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|SHIFT,             XK_period, tagmon,         {.i = +1 } },
-	TAGKEYS(                        XK_1,                      0)
-	TAGKEYS(                        XK_2,                      1)
-	TAGKEYS(                        XK_3,                      2)
-	TAGKEYS(                        XK_4,                      3)
-	TAGKEYS(                        XK_5,                      4)
-	TAGKEYS(                        XK_6,                      5)
-	TAGKEYS(                        XK_7,                      6)
-	TAGKEYS(                        XK_8,                      7)
-	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|SHIFT,             XK_q,      quit,           {0} },
-	{ MODKEY|CONTROL|SHIFT, XK_q,      quit,           {1} },
+	/* modifier         key                      function        argument */
+	{ 0,                XF86XK_AudioMute,        spawn,          {.v = mute_vol} },
+	{ 0,                XF86XK_AudioLowerVolume, spawn,          {.v = down_vol} },
+	{ 0,                XF86XK_AudioRaiseVolume, spawn,          {.v = up_vol} },
+	{ MODKEY,           XK_F2,                   spawn,          {.v = down_vol} },
+	{ MODKEY,           XK_F3,                   spawn,          {.v = up_vol} },
+	{ MODKEY,           XK_F1,                   spawn,          {.v = mute_vol} },
+	{ MODKEY,           XK_p,                    spawn,          {.v = passmenu } },
+	{ MODKEY,           XK_r,                    spawn,          {.v = dmenucmd } },
+	{ MODKEY|SHIFT,     XK_Return,               spawn,          {.v = termcmd } },
+	{ 0,                XK_Print,                spawn,          {.v = scrot} },
+	{ MODKEY,           XK_b,                    togglebar,      {0} },
+	{ MODKEY,           XK_j,                    focusstack,     {.i = +1 } },
+	{ MODKEY,           XK_k,										 focusstack,     {.i = -1 } },
+	{ MODKEY,           XK_i,										 incnmaster,     {.i = +1 } },
+	{ MODKEY,           XK_d,										 incnmaster,     {.i = -1 } },
+	{ MODKEY,           XK_h,										 setmfact,       {.f = -0.05} },
+	{ MODKEY,           XK_l,										 setmfact,       {.f = +0.05} },
+	{ MODKEY|ALT,       XK_h,										 incrgaps,       {.i = +1 } },
+	{ MODKEY|ALT,       XK_l,										 incrgaps,       {.i = -1 } },
+	{ MODKEY|ALT|SHIFT, XK_h,										 incrogaps,      {.i = +1 } },
+	{ MODKEY|ALT|SHIFT, XK_l,										 incrogaps,      {.i = -1 } },
+	{ MODKEY|ALT|CTRL,  XK_h,										 incrigaps,      {.i = +1 } },
+	{ MODKEY|ALT|CTRL,  XK_l,										 incrigaps,      {.i = -1 } },
+	{ MODKEY|ALT,       XK_0,                    togglegaps,     {0} },
+	{ MODKEY|ALT|SHIFT, XK_0,										 defaultgaps,    {0} },
+	{ MODKEY,           XK_y,										 incrihgaps,     {.i = +1 } },
+	{ MODKEY,           XK_o,										 incrihgaps,     {.i = -1 } },
+	{ MODKEY|CTRL,      XK_y,										 incrivgaps,     {.i = +1 } },
+	{ MODKEY|CTRL,      XK_o,										 incrivgaps,     {.i = -1 } },
+	{ MODKEY|ALT,       XK_y,										 incrohgaps,     {.i = +1 } },
+	{ MODKEY|ALT,       XK_o,										 incrohgaps,     {.i = -1 } },
+	{ MODKEY|SHIFT,     XK_y,										 incrovgaps,     {.i = +1 } },
+	{ MODKEY|SHIFT,     XK_o,										 incrovgaps,     {.i = -1 } },
+	{ MODKEY,           XK_Return,							 zoom,           {0} },
+	{ MODKEY,           XK_Tab,									 view,           {0} },
+	{ MODKEY|SHIFT,     XK_c,										 killclient,     {0} },
+	{ MODKEY,           XK_t,										 setlayout,      {.v = &layouts[0]} },
+	{ MODKEY,           XK_f,										 setlayout,      {.v = &layouts[1]} },
+	{ MODKEY,           XK_m,										 setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,           XK_space,								 setlayout,      {0} },
+	{ MODKEY|SHIFT,     XK_space,								 togglefloating, {0} },
+	{ MODKEY,           XK_0,										 view,           {.ui = ~0 } },
+	{ MODKEY|SHIFT,     XK_0,										 tag,            {.ui = ~0 } },
+	{ MODKEY,           XK_comma,								 focusmon,       {.i = -1 } },
+	{ MODKEY,           XK_period,							 focusmon,       {.i = +1 } },
+	{ MODKEY|SHIFT,     XK_comma,								 tagmon,         {.i = -1 } },
+	{ MODKEY|SHIFT,     XK_period,							 tagmon,         {.i = +1 } },
+	{ MODKEY,           XK_q,                    quit,           {1} },
+	{ MODKEY|SHIFT,     XK_q,                    quit,           {0} },
+	TAGKEYS(XK_1, 0)
+	TAGKEYS(XK_2, 1)
+	TAGKEYS(XK_3, 2)
+	TAGKEYS(XK_4, 3)
+	TAGKEYS(XK_5, 4)
+	TAGKEYS(XK_6, 5)
+	TAGKEYS(XK_7, 6)
+	TAGKEYS(XK_8, 7)
+	TAGKEYS(XK_9, 8)
 };
 
 /* button definitions */
@@ -182,4 +200,3 @@ static const Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
-
